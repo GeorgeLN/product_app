@@ -51,37 +51,50 @@ class _ProductPageState extends State<ProductPage> {
           Expanded(
             child: Consumer<ProductViewModel>(
               builder: (context, viewModel, child) {
-                if (viewModel.isLoading) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-
-                if (viewModel.products.isEmpty) {
-                  return const Center(child: Text('No products found.'));
-                }
-
-                return ListView.builder(
-                  itemCount: viewModel.products.length,
-                  itemBuilder: (context, index) {
-                    final product = viewModel.products[index];
-                    return ListTile(
-                      title: Text(product.name),
-                      subtitle: Text('\$${product.price.toStringAsFixed(2)}'),
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          IconButton(
-                            icon: const Icon(Icons.edit),
-                            onPressed: () => _showProductDialog(product: product),
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.delete),
-                            onPressed: () => _showDeleteConfirmation(product.id),
-                          ),
-                        ],
+                switch (viewModel.state) {
+                  case ViewState.loading:
+                    return const Center(child: CircularProgressIndicator());
+                  case ViewState.error:
+                    return Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Text(
+                          'An error occurred: ${viewModel.errorMessage}',
+                          textAlign: TextAlign.center,
+                        ),
                       ),
                     );
-                  },
-                );
+                  case ViewState.loaded:
+                    if (viewModel.products.isEmpty) {
+                      return const Center(child: Text('No products found.'));
+                    }
+                    return ListView.builder(
+                      itemCount: viewModel.products.length,
+                      itemBuilder: (context, index) {
+                        final product = viewModel.products[index];
+                        return ListTile(
+                          title: Text(product.name),
+                          subtitle:
+                              Text('\$${product.price.toStringAsFixed(2)}'),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                icon: const Icon(Icons.edit),
+                                onPressed: () =>
+                                    _showProductDialog(product: product),
+                              ),
+                              IconButton(
+                                icon: const Icon(Icons.delete),
+                                onPressed: () =>
+                                    _showDeleteConfirmation(product.id),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    );
+                }
               },
             ),
           ),
