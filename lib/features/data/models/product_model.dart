@@ -3,11 +3,13 @@ class ProductModel {
   final String id;
   final String name;
   final double price;
+  bool isFavorite;
 
   ProductModel({
     this.id = '',
     required this.name,
     required this.price,
+    this.isFavorite = false,
   });
 
    factory ProductModel.fromJson(Map<String, dynamic> json, String id) {

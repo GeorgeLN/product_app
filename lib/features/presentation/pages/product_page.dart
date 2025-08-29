@@ -81,6 +81,17 @@ class _ProductPageState extends State<ProductPage> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               IconButton(
+                                icon: Icon(
+                                  product.isFavorite
+                                      ? Icons.favorite
+                                      : Icons.favorite_border,
+                                  color:
+                                      product.isFavorite ? Colors.red : null,
+                                ),
+                                onPressed: () =>
+                                    viewModel.toggleFavoriteStatus(product),
+                              ),
+                              IconButton(
                                 icon: const Icon(Icons.edit),
                                 onPressed: () =>
                                     _showProductDialog(product: product),
