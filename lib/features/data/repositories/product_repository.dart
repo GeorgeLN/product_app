@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:prueba_experis/features/data/models/product_model.dart';
 
 class ProductRepository {
-  final CollectionReference _productsCollection = FirebaseFirestore.instance.collection('productos');
+  final CollectionReference _productsCollection = FirebaseFirestore.instance.collection('products');
 
   Future<void> addProduct(ProductModel product) async {
     await _productsCollection.add(product.toJson());
@@ -11,7 +11,9 @@ class ProductRepository {
 
   Future<List<ProductModel>> getAllProducts() async {
     QuerySnapshot snapshot = await _productsCollection.get();
-    return snapshot.docs.map((doc) => ProductModel.fromFirestore(doc)).toList();
+    return snapshot.docs.map((doc) => ProductModel.fromJson(
+      doc.data() as Map<String, dynamic>, doc.id)
+    ).toList();
   }
 
   Future<void> updateProduct(ProductModel product) async {
@@ -27,6 +29,8 @@ class ProductRepository {
         .where('name', isGreaterThanOrEqualTo: query)
         .where('name', isLessThanOrEqualTo: '$query\uf8ff')
         .get();
-    return snapshot.docs.map((doc) => ProductModel.fromFirestore(doc)).toList();
+    return snapshot.docs.map((doc) => ProductModel.fromJson(
+      doc.data() as Map<String, dynamic>, doc.id)
+    ).toList();
   }
 }

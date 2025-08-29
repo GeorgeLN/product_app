@@ -1,6 +1,4 @@
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 class ProductModel {
   final String id;
   final String name;
@@ -12,12 +10,19 @@ class ProductModel {
     required this.price,
   });
 
-  factory ProductModel.fromFirestore(DocumentSnapshot doc) {
-    Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+   factory ProductModel.fromJson(Map<String, dynamic> json, String id) {
+    final priceData = json['price'];
+    double price = 0.0;
+    if (priceData is num) {
+      price = priceData.toDouble();
+    } else if (priceData is String) {
+      price = double.tryParse(priceData) ?? 0.0;
+    }
+
     return ProductModel(
-      id: doc.id,
-      name: data['name'],
-      price: (data['price'] as num).toDouble(),
+      id: id,
+      name: json['name'] ?? 'Unnamed Product',
+      price: price,
     );
   }
 

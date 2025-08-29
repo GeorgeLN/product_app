@@ -28,7 +28,8 @@ class _ProductPageState extends State<ProductPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Products'),
+        title: const Text('Productos'),
+        centerTitle: true,
       ),
       body: Column(
         children: [
@@ -37,7 +38,7 @@ class _ProductPageState extends State<ProductPage> {
             child: TextField(
               controller: _searchController,
               decoration: InputDecoration(
-                hintText: 'Search products...',
+                hintText: 'Buscar productos...',
                 prefixIcon: const Icon(Icons.search),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(20),
@@ -59,14 +60,14 @@ class _ProductPageState extends State<ProductPage> {
                       child: Padding(
                         padding: const EdgeInsets.all(16.0),
                         child: Text(
-                          'An error occurred',
+                          'Ha ocurrido un error',
                           textAlign: TextAlign.center,
                         ),
                       ),
                     );
                   case ViewState.content:
                     if (viewModel.products.isEmpty) {
-                      return const Center(child: Text('No products found.'));
+                      return const Center(child: Text('No se encontraron productos'));
                     }
                     return ListView.builder(
                       itemCount: viewModel.products.length,
@@ -75,7 +76,7 @@ class _ProductPageState extends State<ProductPage> {
                         return ListTile(
                           title: Text(product.name),
                           subtitle:
-                              Text('\$${product.price.toStringAsFixed(2)}'),
+                              Text('\$${product.price.toStringAsFixed(0)}'),
                           trailing: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
@@ -116,17 +117,17 @@ class _ProductPageState extends State<ProductPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text(isEditing ? 'Edit Product' : 'Add Product'),
+          title: Text(isEditing ? 'Editar Producto' : 'Agregar Producto'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
                 controller: nameController,
-                decoration: const InputDecoration(labelText: 'Name'),
+                decoration: const InputDecoration(labelText: 'Nombre'),
               ),
               TextField(
                 controller: priceController,
-                decoration: const InputDecoration(labelText: 'Price'),
+                decoration: const InputDecoration(labelText: 'Precio'),
                 keyboardType: TextInputType.number,
               ),
             ],
@@ -134,7 +135,7 @@ class _ProductPageState extends State<ProductPage> {
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Cancel'),
+              child: const Text('Cancelar'),
             ),
             ElevatedButton(
               onPressed: () {
@@ -157,7 +158,7 @@ class _ProductPageState extends State<ProductPage> {
                   Navigator.of(context).pop();
                 }
               },
-              child: const Text('Save'),
+              child: const Text('Guardar'),
             ),
           ],
         );
@@ -170,19 +171,19 @@ class _ProductPageState extends State<ProductPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Delete Product'),
-          content: const Text('Are you sure you want to delete this product?'),
+          title: const Text('Eliminar Producto'),
+          content: const Text('Está seguro de que deseas eliminar este producto?'),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Cancel'),
+              child: const Text('Cancelar'),
             ),
             ElevatedButton(
               onPressed: () {
                 Provider.of<ProductViewModel>(context, listen: false).deleteProduct(productId);
                 Navigator.of(context).pop();
               },
-              child: const Text('Delete'),
+              child: const Text('Eliminar'),
             ),
           ],
         );
