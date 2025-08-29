@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:prueba_experis/features/data/models/product_model.dart';
 import '../../data/repositories/product_repository.dart';
 
-enum ViewState { loading, loaded, error }
+enum ViewState { loading, content, error }
 
 class ProductViewModel extends ChangeNotifier {
   final ProductRepository _productRepository = ProductRepository();
@@ -11,27 +11,18 @@ class ProductViewModel extends ChangeNotifier {
   List<ProductModel> _products = [];
   List<ProductModel> get products => _products;
 
-  ViewState _state = ViewState.loading;
-  ViewState get state => _state;
-
-  String _errorMessage = '';
-  String get errorMessage => _errorMessage;
-
-  void _setState(ViewState newState) {
-    _state = newState;
-    notifyListeners();
-  }
+  ViewState state = ViewState.loading;
 
   Future<void> fetchProducts() async {
-    _setState(ViewState.loading);
     try {
+      showLoading();
+
       _products = await _productRepository.getAllProducts();
-      _setState(ViewState.loaded);
-    } catch (e) {
-      _errorMessage = e.toString();
-      // ignore: avoid_print
-      print('Error fetching products: $_errorMessage');
-      _setState(ViewState.error);
+      
+      showContent();
+    }
+    catch (e) {
+      showError();
     }
   }
 
@@ -39,11 +30,10 @@ class ProductViewModel extends ChangeNotifier {
     try {
       await _productRepository.addProduct(product);
       await fetchProducts(); // Refresh the list
-    } catch (e) {
-      _errorMessage = e.toString();
-      // ignore: avoid_print
-      print('Error adding product: $_errorMessage');
-      _setState(ViewState.error);
+      showContent();
+    }
+    catch (e) {
+      showError();
     }
   }
 
@@ -51,40 +41,51 @@ class ProductViewModel extends ChangeNotifier {
     try {
       await _productRepository.updateProduct(product);
       await fetchProducts(); // Refresh the list
-    } catch (e) {
-      _errorMessage = e.toString();
-      // ignore: avoid_print
-      print('Error updating product: $_errorMessage');
-      _setState(ViewState.error);
+      showContent();
+    }
+    catch (e) {
+      showError();
     }
   }
 
   Future<void> deleteProduct(String productId) async {
     try {
       await _productRepository.deleteProduct(productId);
-      await fetchProducts(); // Refresh the list
-    } catch (e) {
-      _errorMessage = e.toString();
-      // ignore: avoid_print
-      print('Error deleting product: $_errorMessage');
-      _setState(ViewState.error);
+    }
+    catch (e) {
+      showError();
     }
   }
 
   Future<void> searchProducts(String query) async {
-    _setState(ViewState.loading);
     try {
+      showLoading();
+
       if (query.isEmpty) {
         _products = await _productRepository.getAllProducts();
       } else {
         _products = await _productRepository.searchProducts(query);
       }
-      _setState(ViewState.loaded);
-    } catch (e) {
-      _errorMessage = e.toString();
-      // ignore: avoid_print
-      print('Error searching products: $_errorMessage');
-      _setState(ViewState.error);
+
+      showContent();
     }
+    catch (e) {
+      showError();
+    }
+  }
+
+    Future<void> showLoading() async {
+    state = ViewState.loading;
+    notifyListeners();
+  }
+
+  Future<void> showContent() async {
+    state = ViewState.content;
+    notifyListeners();
+  }
+
+  Future<void> showError() async {
+    state = ViewState.error;
+    notifyListeners();
   }
 }

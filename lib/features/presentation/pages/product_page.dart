@@ -59,12 +59,12 @@ class _ProductPageState extends State<ProductPage> {
                       child: Padding(
                         padding: const EdgeInsets.all(16.0),
                         child: Text(
-                          'An error occurred: ${viewModel.errorMessage}',
+                          'An error occurred',
                           textAlign: TextAlign.center,
                         ),
                       ),
                     );
-                  case ViewState.loaded:
+                  case ViewState.content:
                     if (viewModel.products.isEmpty) {
                       return const Center(child: Text('No products found.'));
                     }
