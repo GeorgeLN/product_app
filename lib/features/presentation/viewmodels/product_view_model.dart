@@ -29,8 +29,7 @@ class ProductViewModel extends ChangeNotifier {
   Future<void> addProduct(ProductModel product) async {
     try {
       await _productRepository.addProduct(product);
-      await fetchProducts(); // Refresh the list
-      showContent();
+      await fetchProducts();
     }
     catch (e) {
       showError();
@@ -40,8 +39,7 @@ class ProductViewModel extends ChangeNotifier {
   Future<void> updateProduct(ProductModel product) async {
     try {
       await _productRepository.updateProduct(product);
-      await fetchProducts(); // Refresh the list
-      showContent();
+      await fetchProducts();
     }
     catch (e) {
       showError();
@@ -51,6 +49,7 @@ class ProductViewModel extends ChangeNotifier {
   Future<void> deleteProduct(String productId) async {
     try {
       await _productRepository.deleteProduct(productId);
+      await fetchProducts();
     }
     catch (e) {
       showError();
@@ -74,17 +73,17 @@ class ProductViewModel extends ChangeNotifier {
     }
   }
 
-    Future<void> showLoading() async {
+  void showLoading() {
     state = ViewState.loading;
     notifyListeners();
   }
 
-  Future<void> showContent() async {
+  void showContent() {
     state = ViewState.content;
     notifyListeners();
   }
 
-  Future<void> showError() async {
+  void showError() {
     state = ViewState.error;
     notifyListeners();
   }

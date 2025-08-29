@@ -3,8 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:prueba_experis/features/data/models/product_model.dart';
 
 class ProductRepository {
-  final CollectionReference _productsCollection =
-      FirebaseFirestore.instance.collection('productos');
+  final CollectionReference _productsCollection = FirebaseFirestore.instance.collection('productos');
 
   Future<void> addProduct(ProductModel product) async {
     await _productsCollection.add(product.toJson());
