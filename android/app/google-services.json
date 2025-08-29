@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "336175806033",
+    "project_id": "flutter-experis-exam",
+    "storage_bucket": "flutter-experis-exam.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:336175806033:android:235c2c944795797c726a70",
+        "android_client_info": {
+          "package_name": "com.george.pruebaexperis.prueba_experis"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyByxt9MUzdLP_l0F452yHLX9qhA5ig1rdY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
