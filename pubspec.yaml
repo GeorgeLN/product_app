@@ -28,11 +28,15 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  build_runner: ^2.7.0
   cloud_firestore: ^6.0.0
   cupertino_icons: ^1.0.8
+  firebase_analytics: ^12.0.0
   firebase_core: ^4.0.0
+  firebase_remote_config: ^6.0.0
   flutter:
     sdk: flutter
+  mockito: ^5.5.0
   provider: ^6.1.2
   shared_preferences: ^2.2.3
 

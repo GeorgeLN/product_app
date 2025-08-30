@@ -77,21 +77,6 @@ class ProductViewModel extends ChangeNotifier {
     }
   }
 
-  void showLoading() {
-    state = ViewState.loading;
-    notifyListeners();
-  }
-
-  void showContent() {
-    state = ViewState.content;
-    notifyListeners();
-  }
-
-  void showError() {
-    state = ViewState.error;
-    notifyListeners();
-  }
-
   Future<void> _updateFavoriteStatus() async {
     final favoriteIds = await _favoriteRepository.getFavoriteProducts();
     for (var product in _products) {
@@ -112,6 +97,21 @@ class ProductViewModel extends ChangeNotifier {
     }
     await _favoriteRepository.saveFavoriteProducts(favoriteIds);
 
+    notifyListeners();
+  }
+
+  void showLoading() {
+    state = ViewState.loading;
+    notifyListeners();
+  }
+
+  void showContent() {
+    state = ViewState.content;
+    notifyListeners();
+  }
+
+  void showError() {
+    state = ViewState.error;
     notifyListeners();
   }
 }

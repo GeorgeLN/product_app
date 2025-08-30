@@ -1,30 +1,72 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
+import 'package:provider/provider.dart';
+import 'package:prueba_experis/core/services/remote_config_service.dart';
+import 'package:prueba_experis/features/data/models/product_model.dart';
+import 'package:prueba_experis/features/presentation/pages/product_page.dart';
+import 'package:prueba_experis/features/presentation/viewmodels/product_view_model.dart';
 
-import 'package:prueba_experis/main.dart';
+import 'widget_test.mocks.dart';
 
+// Ahora también generamos un mock para ProductViewModel
+@GenerateNiceMocks([
+  MockSpec<RemoteConfigService>(),
+  MockSpec<ProductViewModel>(),
+])
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  // Creamos los mocks una sola vez para ambos tests
+  late MockRemoteConfigService mockRemoteConfigService;
+  late MockProductViewModel mockProductViewModel;
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+  setUp(() {
+    // Esta función se ejecuta antes de cada test
+    mockRemoteConfigService = MockRemoteConfigService();
+    mockProductViewModel = MockProductViewModel();
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    // Configuramos el comportamiento por defecto de nuestro ViewModel falso
+    when(mockProductViewModel.products).thenReturn(<ProductModel>[]);
+    when(mockProductViewModel.state).thenReturn(ViewState.content);
+  });
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+  // Función auxiliar para no repetir código
+  Future<void> pumpMyApp(WidgetTester tester) {
+    return tester.pumpWidget(
+      MultiProvider(
+        providers: [
+          // Usamos los mocks en lugar de los viewmodels reales
+          ChangeNotifierProvider<ProductViewModel>.value(value: mockProductViewModel),
+          Provider<RemoteConfigService>.value(value: mockRemoteConfigService),
+        ],
+        child: const MaterialApp(
+          home: ProductPage(), // El home de MyApp es ProductPage
+        ),
+      ),
+    );
+  }
+
+  testWidgets('Muestra el botón de ofertas cuando el feature flag está activado', (WidgetTester tester) async {
+    // Arrange
+    when(mockRemoteConfigService.showOffersSection).thenReturn(true);
+
+    // Act
+    await pumpMyApp(tester);
+    await tester.pumpAndSettle();
+
+    // Assert
+    expect(find.byIcon(Icons.local_offer), findsOneWidget);
+  });
+
+  testWidgets('Oculta el botón de ofertas cuando el feature flag está desactivado', (WidgetTester tester) async {
+    // Arrange
+    when(mockRemoteConfigService.showOffersSection).thenReturn(false);
+
+    // Act
+    await pumpMyApp(tester);
+    await tester.pumpAndSettle();
+
+    // Assert
+    expect(find.byIcon(Icons.local_offer), findsNothing);
   });
 }

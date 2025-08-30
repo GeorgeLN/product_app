@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../data/models/product_model.dart';
 import '../viewmodels/product_view_model.dart';
+import 'package:prueba_experis/core/services/remote_config_service.dart';
+import 'package:prueba_experis/features/presentation/pages/offer_page.dart';
 
 class ProductPage extends StatefulWidget {
   const ProductPage({super.key});
@@ -25,11 +27,27 @@ class _ProductPageState extends State<ProductPage> {
   @override
   Widget build(BuildContext context) {
     final viewModel = Provider.of<ProductViewModel>(context);
+    final remoteConfigService = Provider.of<RemoteConfigService>(context);
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Productos'),
         centerTitle: true,
+        actions: [
+          if (remoteConfigService.showOffersSection)
+            IconButton(
+              icon: const Icon(
+                Icons.local_offer,
+                color: Colors.black,
+              ),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const OfferPage()),
+                );
+              },
+            ),
+        ],
       ),
       body: Column(
         children: [
